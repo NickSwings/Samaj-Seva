@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isVerified() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    match /users/{userId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && request.auth.uid == userId;
+      allow update: if isVerified() && request.auth.uid == userId;
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ngo';
+      
+      allow update: if isVerified() && (
+        request.auth.uid == resource.data.postedBy || 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'volunteer' && 
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['acceptedVolunteers']))
+      );
+
+      allow delete: if isVerified() && request.auth.uid == resource.data.postedBy;
+    }
+  }
+}
