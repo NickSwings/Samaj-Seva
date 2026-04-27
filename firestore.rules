@@ -7,10 +7,16 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow read: if isVerified();
-      allow create: if isVerified() && request.auth.uid == userId;
-      allow update: if isVerified() && request.auth.uid == userId;
-    }
+  		// Allow any authenticated user to create their initial profile
+  		// They just need to be logged in and the ID must match their Auth UID
+  		allow create: if request.auth != null && request.auth.uid == userId;
+
+  		// For updates, you can keep the stricter verified check
+  		allow update: if isVerified() && request.auth.uid == userId;
+  
+  		// NGOs still need to read profiles to see volunteer contact info
+  		allow read: if isVerified();
+		}
 
     match /tasks/{taskId} {
       allow read: if isVerified();
