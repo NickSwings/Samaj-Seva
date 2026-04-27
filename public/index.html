@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Samaj Seva — Smart Volunteer Coordination</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind config: sets Inter as the default font (JS config, not CSS) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body class="font-sans min-h-screen bg-gray-50 flex flex-col">
+
+    <!-- ── TOP NAVBAR ─────────────────────────────────────────────── -->
+    <nav class="bg-blue-700 text-white px-6 py-4 flex items-center justify-between shadow-lg">
+
+        <!-- Brand -->
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-500 w-9 h-9 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-handshake text-white text-base"></i>
+            </div>
+            <div>
+                <span class="text-lg font-bold tracking-wide">Samaj Seva</span>
+                <span class="hidden sm:inline text-blue-300 text-sm font-normal ml-2">
+                    Smart Volunteer Coordination
+                </span>
+            </div>
+        </div>
+
+        <!-- Nav actions -->
+        <div class="flex items-center gap-3">
+            <a href="register.html"
+               class="bg-white text-blue-700 font-semibold px-4 py-2 rounded-lg hover:bg-blue-50 transition text-sm">
+                Register
+            </a>
+        </div>
+    </nav>
+    <!-- ── END NAVBAR ─────────────────────────────────────────────── -->
+
+
+    <!-- ── MAIN CONTENT ───────────────────────────────────────────── -->
+    <main class="flex flex-1">
+
+        <!-- LEFT: Hero panel — hidden on mobile, visible on large screens -->
+        <div class="hidden lg:flex lg:w-1/2 bg-blue-700 text-white flex-col justify-center px-16 py-12">
+            <div class="max-w-md">
+
+                <!-- Icon -->
+                <div class="bg-blue-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-lg">
+                    <i class="fa-solid fa-people-group text-3xl text-white"></i>
+                </div>
+
+                <!-- Headline -->
+                <h1 class="text-4xl font-bold mb-5 leading-tight">
+                    Connecting Volunteers to Communities that Need Them
+                </h1>
+                <p class="text-blue-200 text-lg mb-10 leading-relaxed">
+                    AI-powered matching ensures the right volunteer reaches the right task.
+                    Faster. Smarter. More impact for every NGO.
+                </p>
+
+                <!-- Feature highlights -->
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-4 bg-blue-600 rounded-xl px-5 py-3">
+                        <i class="fa-solid fa-robot text-blue-300 text-xl w-5 text-center"></i>
+                        <span class="text-sm text-blue-100">Gemini AI-powered volunteer matching</span>
+                    </div>
+                    <div class="flex items-center gap-4 bg-blue-600 rounded-xl px-5 py-3">
+                        <i class="fa-solid fa-building text-blue-300 text-xl w-5 text-center"></i>
+                        <span class="text-sm text-blue-100">NGOs post tasks, volunteers accept them</span>
+                    </div>
+                    <div class="flex items-center gap-4 bg-blue-600 rounded-xl px-5 py-3">
+                        <i class="fa-solid fa-shield-halved text-blue-300 text-xl w-5 text-center"></i>
+                        <span class="text-sm text-blue-100">Secure Firebase authentication</span>
+                    </div>
+                    <div class="flex items-center gap-4 bg-blue-600 rounded-xl px-5 py-3">
+                        <i class="fa-solid fa-bolt text-blue-300 text-xl w-5 text-center"></i>
+                        <span class="text-sm text-blue-100">Real-time updates via Firestore</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END LEFT PANEL -->
+
+
+        <!-- RIGHT: Login form panel -->
+        <div class="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 bg-gray-50">
+            <div class="w-full max-w-md">
+
+                <!-- Mobile-only brand logo (hidden on large screens where left panel shows) -->
+                <div class="lg:hidden text-center mb-8">
+                    <div class="inline-flex items-center gap-3 mb-2">
+                        <div class="bg-blue-700 w-10 h-10 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-handshake text-white text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-blue-700">Samaj Seva</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Smart Volunteer Coordination</p>
+                </div>
+
+                <!-- Login card -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+
+                    <h2 class="text-2xl font-bold text-gray-800 mb-1">Welcome back</h2>
+                    <p class="text-gray-400 text-sm mb-6">Sign in to your Samaj Seva account</p>
+
+                    <!-- Error message (hidden until login fails) -->
+                    <div id="error-box"
+                         class="hidden bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-5 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
+                        <span id="error-msg"></span>
+                    </div>
+
+                    <!-- Success message (hidden until redirect begins) -->
+                    <div id="success-box"
+                         class="hidden bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 mb-5 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check flex-shrink-0"></i>
+                        <span>Login successful! Redirecting you...</span>
+                    </div>
+
+                    <!-- Form fields (no <form> tag — we handle submit via JS button click) -->
+                    <div class="flex flex-col gap-4">
+
+                        <!-- Email field -->
+                        <div>
+                            <label for="email"
+                                   class="block text-sm font-medium text-gray-700 mb-1">
+                                Email address
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="you@example.com"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800
+                                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                            />
+                        </div>
+
+                        <!-- Password field with show/hide toggle -->
+                        <div>
+                            <label for="password"
+                                   class="block text-sm font-medium text-gray-700 mb-1">
+                                Password
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="password"
+                                    id="password"
+                                    placeholder="••••••••"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800
+                                           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition pr-10"
+                                />
+                                <!-- Toggle password visibility -->
+                                <button
+                                    type="button"
+                                    id="toggle-password"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                                    title="Show/hide password"
+                                >
+                                    <i id="toggle-icon" class="fa-solid fa-eye text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sign In button -->
+                        <button
+                            id="login-btn"
+                            class="w-full bg-blue-700 hover:bg-blue-800 disabled:bg-blue-400 disabled:cursor-not-allowed
+                                   text-white font-semibold py-2.5 rounded-lg transition flex items-center justify-center gap-2 mt-1"
+                        >
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            Sign In
+                        </button>
+
+                    </div>
+                    <!-- END form fields -->
+
+                    <!-- Register link -->
+                    <div class="mt-6 text-center text-sm text-gray-500">
+                        Don't have an account?
+                        <a href="register.html"
+                           class="text-blue-600 font-semibold hover:underline ml-1">
+                            Register here
+                        </a>
+                    </div>
+
+                </div>
+                <!-- END login card -->
+
+                <!-- Footer note -->
+                <p class="text-center text-xs text-gray-400 mt-6">
+                    Powered by Google Gemini AI &bull; Built for Google Solution Challenge 2026
+                </p>
+
+            </div>
+        </div>
+        <!-- END RIGHT PANEL -->
+
+    </main>
+    <!-- ── END MAIN CONTENT ───────────────────────────────────────── -->
+
+
+    <!-- ── LOGIN LOGIC ────────────────────────────────────────────── -->
+    <!--
+        We use type="module" so we can import from auth.js using ES module syntax.
+        This is required for Firebase SDK v9+ modular imports.
+    -->
+    <script type="module">
+        import { loginUser } from "./js/auth.js";
+
+        // Grab DOM elements
+        const loginBtn      = document.getElementById("login-btn");
+        const emailInput    = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const toggleBtn     = document.getElementById("toggle-password");
+        const toggleIcon    = document.getElementById("toggle-icon");
+        const errorBox      = document.getElementById("error-box");
+        const errorMsg      = document.getElementById("error-msg");
+        const successBox    = document.getElementById("success-box");
+
+        // ── Helpers ──────────────────────────────────────────────────
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorBox.classList.remove("hidden");
+            successBox.classList.add("hidden");
+        }
+
+        function hideError() {
+            errorBox.classList.add("hidden");
+        }
+
+        function setLoadingState(isLoading) {
+            loginBtn.disabled = isLoading;
+            loginBtn.innerHTML = isLoading
+                ? '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...'
+                : '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+        }
+
+        // ── Toggle password visibility ────────────────────────────────
+        toggleBtn.addEventListener("click", () => {
+            const isHidden = passwordInput.type === "password";
+            passwordInput.type = isHidden ? "text" : "password";
+            toggleIcon.className = isHidden
+                ? "fa-solid fa-eye-slash text-sm"
+                : "fa-solid fa-eye text-sm";
+        });
+
+        // ── Main login handler ────────────────────────────────────────
+        async function handleLogin() {
+            hideError();
+
+            const email    = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Basic client-side validation before hitting Firebase
+            if (!email) {
+                showError("Please enter your email address.");
+                emailInput.focus();
+                return;
+            }
+            if (!password) {
+                showError("Please enter your password.");
+                passwordInput.focus();
+                return;
+            }
+
+            setLoadingState(true);
+
+            try {
+                // loginUser() in auth.js signs in and redirects on success
+                await loginUser(email, password);
+
+                // Show success message briefly before redirect happens
+                successBox.classList.remove("hidden");
+
+            } catch (error) {
+                // Map Firebase error codes to friendly messages
+                let message = "Login failed. Please try again.";
+
+                if (error.code === "auth/email-not-verified") {
+                    message = "Email not verified yet. Check your inbox and spam/promotions folder, then click the verification link.";
+                } else if (error.code === "auth/invalid-credential"
+                    || error.code === "auth/user-not-found"
+                    || error.code === "auth/wrong-password") {
+                    message = "Incorrect email or password. Please try again.";
+                } else if (error.code === "auth/invalid-email") {
+                    message = "Please enter a valid email address.";
+                } else if (error.code === "auth/too-many-requests") {
+                    message = "Too many failed attempts. Please wait a moment and try again.";
+                } else if (error.code === "auth/user-disabled") {
+                    message = "This account has been disabled. Please contact support.";
+                } else if (error.code === "auth/network-request-failed") {
+                    message = "Network error. Please check your internet connection.";
+                } else if (error.message) {
+                    // Custom errors thrown by loginUser (e.g., "Profile not found")
+                    message = error.message;
+                }
+
+                showError(message);
+                setLoadingState(false);
+            }
+        }
+
+        // ── Event listeners ───────────────────────────────────────────
+
+        // Click the Sign In button
+        loginBtn.addEventListener("click", handleLogin);
+
+        // Press Enter in email or password field
+        emailInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") handleLogin();
+        });
+        passwordInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") handleLogin();
+        });
+
+        // Clear error when user starts typing again
+        emailInput.addEventListener("input", hideError);
+        passwordInput.addEventListener("input", hideError);
+
+    </script>
+    <!-- ── END LOGIN LOGIC ────────────────────────────────────────── -->
+
+</body>
+</html>

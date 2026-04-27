@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NGO Dashboard — Samaj Seva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="font-sans min-h-screen bg-gray-50 flex flex-col hidden relative" id="page-body">
+    
+    <nav class="bg-blue-700 text-white px-6 py-4 flex items-center justify-between shadow-md sticky top-0 z-40">
+        <div class="flex items-center gap-3">
+            <div class="bg-white w-9 h-9 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-building-ngo text-blue-700 text-base"></i>
+            </div>
+            <div>
+                <span class="text-lg font-bold tracking-wide">Samaj Seva</span>
+                <span class="text-blue-200 text-sm ml-2 hidden sm:inline">| NGO Portal</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="nav-org-name" class="text-sm font-medium hidden md:inline"></span>
+            <button id="logout-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg transition border border-blue-400 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-1 flex flex-col gap-6">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-xl font-bold shadow-inner" id="profile-initial">-</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800 leading-tight" id="profile-org-name">Loading...</h2>
+                        <div class="flex items-center gap-1.5 text-xs text-gray-500 mt-1 font-medium">
+                            <i class="fa-solid fa-location-dot text-blue-500"></i> 
+                            <span id="profile-location">...</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mb-5 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100" id="profile-desc">...</p>
+                <div class="border-t border-gray-100 pt-4 flex flex-col gap-3">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Admin Contact</h3>
+                    <div class="flex items-center gap-3 text-sm text-gray-700">
+                        <i class="fa-solid fa-user-tie text-blue-500 w-4 text-center"></i>
+                        <span id="profile-admin-name" class="font-medium">...</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm text-gray-700">
+                        <i class="fa-solid fa-phone text-blue-500 w-4 text-center"></i>
+                        <span id="profile-phone" class="font-medium">...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-1">Post a New Task</h2>
+                <p class="text-gray-500 text-sm mb-6">Create a need request for volunteers.</p>
+
+                <div id="task-error" class="hidden bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg mb-4 border border-red-200"></div>
+                <div id="task-success" class="hidden bg-green-50 text-green-700 text-sm px-4 py-3 rounded-lg mb-4 border border-green-200"><i class="fa-solid fa-circle-check mr-1"></i> Task posted successfully!</div>
+
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                        <input type="text" id="task-title" placeholder="e.g., Food Distribution Drive" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="task-desc" rows="3" placeholder="Explain what volunteers need to do..." class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none custom-scrollbar"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Dates / Duration</label>
+                            <input type="text" id="task-dates" placeholder="e.g., May 15-20, or Flexible" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Time (Optional)</label>
+                            <input type="text" id="task-time" placeholder="e.g., 10 AM - 2 PM" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Required Skills</label>
+                        <input type="text" id="task-skills" placeholder="e.g., teaching, driving, cooking" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input type="text" id="task-location" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-blue-50/50" />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Urgency</label>
+                            <select id="task-urgency" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Volunteers Needed</label>
+                            <input type="number" id="task-count" min="1" value="1" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                        </div>
+                    </div>
+
+                    <button id="post-task-btn" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 rounded-lg transition mt-2 shadow-md">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Post Task
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Your Posted Tasks</h2>
+                    <p class="text-gray-500 text-sm">Manage tasks and coordinate with volunteers</p>
+                </div>
+                
+                <div class="flex items-center gap-3 flex-wrap">
+                    <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-600 font-medium">
+                        <input type="checkbox" id="toggle-closed" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer" checked>
+                        Show Closed
+                    </label>
+                    <select id="sort-tasks" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none bg-white shadow-sm">
+                        <option value="newest">Newest First</option>
+                        <option value="urgency">Highest Urgency</option>
+                        <option value="accepted">Most Accepted</option>
+                    </select>
+                    <div class="bg-blue-100 text-blue-800 text-sm font-bold px-3 py-1.5 rounded-lg shadow-sm" id="task-counter">0 Total</div>
+                </div>
+            </div>
+
+            <div id="tasks-container" class="flex flex-col gap-4">
+                <div id="tasks-loader" class="text-center py-10 text-gray-400">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl mb-2 text-blue-500"></i>
+                    <p>Loading your tasks...</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="manage-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="bg-blue-700 text-white px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-lg leading-tight">Manage Volunteers</h3>
+                    <p id="modal-task-title" class="text-blue-200 text-xs font-medium">Task Title</p>
+                </div>
+                <button id="close-modal-btn" class="text-blue-200 hover:text-white transition text-xl px-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar bg-gray-50 flex-1">
+                <div id="modal-loader" class="text-center py-10 text-gray-400 hidden">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-blue-500"></i>
+                    <p class="text-sm">Fetching volunteer profiles...</p>
+                </div>
+                <div id="modal-empty" class="text-center py-10 hidden">
+                    <i class="fa-solid fa-user-clock text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-600 font-medium">No volunteers have accepted this task yet.</p>
+                </div>
+                <div id="modal-volunteers-list" class="flex flex-col gap-3"></div>
+            </div>
+            <div class="bg-white border-t border-gray-200 px-6 py-4 flex justify-end">
+                <button id="close-modal-btn-bottom" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-5 py-2 rounded-lg transition text-sm">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-gray-800 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg leading-tight">Edit Task</h3>
+                <button id="close-edit-btn" class="text-gray-400 hover:text-white transition text-xl px-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 flex flex-col gap-4">
+                <input type="hidden" id="edit-task-id">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                    <input type="text" id="edit-task-title" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea id="edit-task-desc" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none custom-scrollbar"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Dates</label>
+                        <input type="text" id="edit-task-dates" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                        <input type="text" id="edit-task-time" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                    <input type="text" id="edit-task-location" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Urgency</label>
+                        <select id="edit-task-urgency" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Volunteers Needed</label>
+                        <input type="number" id="edit-task-count" min="1" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end gap-3">
+                <button id="cancel-edit-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-5 py-2 rounded-lg transition text-sm">Cancel</button>
+                <button id="save-edit-btn" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-md">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./js/ngo.js"></script>
+</body>
+</html>

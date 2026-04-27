@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register — Samaj Seva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px;}
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="font-sans min-h-screen bg-gray-50 flex flex-col">
+
+    <nav class="bg-blue-700 text-white px-6 py-4 flex items-center justify-between shadow-lg">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-500 w-9 h-9 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-handshake text-white text-base"></i>
+            </div>
+            <span class="text-lg font-bold tracking-wide">Samaj Seva</span>
+        </div>
+        <a href="index.html" class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-500 transition border border-blue-400 text-sm">
+            Back to Login
+        </a>
+    </nav>
+
+    <main class="flex flex-1 items-center justify-center py-10 px-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-lg p-8 border border-gray-100">
+
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Join Samaj Seva</h2>
+                <p class="text-gray-500 text-sm" id="subtitle">Create your volunteer account in 3 easy steps.</p>
+            </div>
+
+            <div id="step-indicators" class="flex items-center justify-between mb-8 relative">
+                <div class="absolute left-0 top-4 w-full h-1 bg-gray-200 z-0 rounded"></div>
+                <div id="progress-bar" class="absolute left-0 top-4 h-1 bg-blue-600 z-0 rounded transition-all duration-500" style="width: 0%;"></div>
+
+                <div class="relative z-10 flex flex-col items-center gap-1">
+                    <div id="ind-1" class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-md transition-all">1</div>
+                    <span class="text-xs font-semibold text-blue-700">Account</span>
+                </div>
+                <div class="relative z-10 flex flex-col items-center gap-1">
+                    <div id="ind-2" class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-sm shadow-sm transition-all">2</div>
+                    <span id="label-2" class="text-xs font-medium text-gray-400">Profile</span>
+                </div>
+                <div class="relative z-10 flex flex-col items-center gap-1">
+                    <div id="ind-3" class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-sm shadow-sm transition-all">3</div>
+                    <span id="label-3" class="text-xs font-medium text-gray-400">Availability</span>
+                </div>
+            </div>
+
+            <div id="error-box" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
+                <span id="error-msg"></span>
+            </div>
+
+            <div id="success-screen" class="hidden flex flex-col items-center text-center gap-5 py-4">
+                <div class="bg-blue-50 w-24 h-24 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-envelope-circle-check text-blue-600 text-5xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Account Created! Check Your Email</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed max-w-md">
+                        We've sent a verification link to <span id="success-email" class="font-semibold text-blue-700"></span>.
+                        Click the link to verify your account.
+                    </p>
+                </div>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl px-5 py-4 text-left w-full max-w-md">
+                    <p class="text-yellow-800 text-sm font-semibold mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Can't find the email?
+                    </p>
+                    <ul class="text-yellow-700 text-xs space-y-1 list-none">
+                        <li><i class="fa-solid fa-angle-right mr-2"></i>Check your <strong>Spam</strong> folder</li>
+                        <li><i class="fa-solid fa-angle-right mr-2"></i>Check your <strong>Promotions</strong> tab</li>
+                        <li><i class="fa-solid fa-angle-right mr-2"></i>Wait up to 2 minutes</li>
+                    </ul>
+                </div>
+                <div class="flex flex-col items-center gap-2 w-full max-w-md">
+                    <button id="btn-resend" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 rounded-lg transition text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Resend Verification Email
+                    </button>
+                    <p id="resend-msg" class="hidden text-green-600 text-xs font-medium">
+                        <i class="fa-solid fa-circle-check mr-1"></i>Verification email resent!
+                    </p>
+                </div>
+                <a href="index.html" class="w-full max-w-md bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg transition text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Go to Login (after verifying)
+                </a>
+            </div>
+
+            <div id="step-1" class="flex flex-col gap-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+                    <input type="email" id="email" placeholder="you@example.com" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition" />
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="password" placeholder="Min 6 characters" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition pr-10" />
+                            <button type="button" class="toggle-pass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" data-target="password">
+                                <i class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <input type="password" id="confirm-password" placeholder="Repeat password" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition pr-10" />
+                            <button type="button" class="toggle-pass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" data-target="confirm-password">
+                                <i class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-next-1" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg transition mt-2 flex items-center justify-center gap-2">
+                    Next Step <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <p class="text-center text-xs text-gray-400">
+                    Already have an account?
+                    <a href="index.html" class="text-blue-600 font-semibold hover:underline ml-1">Sign in</a>
+                </p>
+                <p class="text-center text-xs text-gray-400 mt-2">
+                    Are you an organization? 
+                    <a href="register-ngo.html" class="text-blue-600 font-semibold hover:underline">Register as an NGO</a>
+                </p>
+            </div>
+
+            <div id="step-2" class="hidden flex flex-col gap-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="vol-name" placeholder="Raunak Dey" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition" />
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                        <input type="date" id="vol-dob" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <div class="flex gap-2">
+                            
+                            <div class="relative w-1/3" id="country-dropdown-container">
+                                <button type="button" id="country-dropdown-btn" class="w-full h-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none bg-white flex items-center justify-between transition hover:bg-gray-50">
+                                    <span id="selected-country-text" class="flex items-center gap-2 font-medium">
+                                        </span>
+                                    <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+                                </button>
+                                
+                                <div id="country-dropdown-menu" class="hidden absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto custom-scrollbar">
+                                    </div>
+                            </div>
+                            
+                            <input type="hidden" id="country-code" value="+91">
+                            <input type="tel" id="vol-phone" placeholder="9876543210" class="w-2/3 border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition" />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Skills (comma separated)</label>
+                    <input type="text" id="vol-skills" placeholder="e.g. Teaching, First Aid, Driving" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition" />
+                    <p class="text-xs text-blue-600 mt-1.5">
+                        <i class="fa-solid fa-robot mr-1"></i>
+                        Gemini AI uses your skills to match you to the right tasks.
+                    </p>
+                </div>
+                <div class="flex gap-4 mt-2">
+                    <button id="btn-back-1" class="w-1/3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-lg transition"><i class="fa-solid fa-arrow-left mr-1"></i> Back</button>
+                    <button id="btn-next-2" class="w-2/3 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2">Next Step <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <div id="step-3" class="hidden flex flex-col gap-5">
+                <div>
+                    <label class="block text-sm font-bold text-gray-800 mb-1">Select your typical availability</label>
+                    <p class="text-xs text-gray-500">Tap the slots you are generally free. You can skip this for now.</p>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar pb-2">
+                    <div class="min-w-[520px]">
+                        <div class="grid grid-cols-8 gap-2 mb-2 text-center">
+                            <div></div>
+                            <div class="text-xs font-bold text-gray-600">Mon</div>
+                            <div class="text-xs font-bold text-gray-600">Tue</div>
+                            <div class="text-xs font-bold text-gray-600">Wed</div>
+                            <div class="text-xs font-bold text-gray-600">Thu</div>
+                            <div class="text-xs font-bold text-gray-600">Fri</div>
+                            <div class="text-xs font-bold text-blue-500">Sat</div>
+                            <div class="text-xs font-bold text-blue-500">Sun</div>
+                        </div>
+                        <div id="availability-matrix" class="flex flex-col gap-2"></div>
+                    </div>
+                </div>
+                <div id="avail-summary" class="text-xs text-gray-400 italic">No slots selected — will be saved as "Flexible".</div>
+                <div class="flex gap-4 mt-2">
+                    <button id="btn-back-2" class="w-1/3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-lg transition"><i class="fa-solid fa-arrow-left mr-1"></i> Back</button>
+                    <button id="btn-submit" class="w-2/3 bg-blue-700 hover:bg-blue-800 disabled:bg-blue-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2 shadow-md"><i class="fa-solid fa-user-plus"></i> Complete Account</button>
+                </div>
+                <button id="btn-skip-avail" class="text-xs text-gray-400 hover:text-gray-600 underline text-center mt-1 transition">Skip availability for now</button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { auth, db } from "./js/firebase-config.js";
+        import { createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+        import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+        // --- GLOBAL COUNTRY DATA (Sorted Alphabetically) ---
+        const countryData = [
+            {name:"Afghanistan", code:"+93", iso:"af"}, {name:"Albania", code:"+355", iso:"al"},
+            {name:"Algeria", code:"+213", iso:"dz"}, {name:"Andorra", code:"+376", iso:"ad"},
+            {name:"Angola", code:"+244", iso:"ao"}, {name:"Argentina", code:"+54", iso:"ar"},
+            {name:"Australia", code:"+61", iso:"au"}, {name:"Austria", code:"+43", iso:"at"},
+            {name:"Bahamas", code:"+1242", iso:"bs"}, {name:"Bangladesh", code:"+880", iso:"bd"},
+            {name:"Belgium", code:"+32", iso:"be"}, {name:"Brazil", code:"+55", iso:"br"},
+            {name:"Canada", code:"+1", iso:"ca"}, {name:"China", code:"+86", iso:"cn"},
+            {name:"Colombia", code:"+57", iso:"co"}, {name:"Denmark", code:"+45", iso:"dk"},
+            {name:"Egypt", code:"+20", iso:"eg"}, {name:"France", code:"+33", iso:"fr"},
+            {name:"Germany", code:"+49", iso:"de"}, {name:"Greece", code:"+30", iso:"gr"},
+            {name:"India", code:"+91", iso:"in"}, {name:"Indonesia", code:"+62", iso:"id"},
+            {name:"Iran", code:"+98", iso:"ir"}, {name:"Iraq", code:"+964", iso:"iq"},
+            {name:"Ireland", code:"+353", iso:"ie"}, {name:"Israel", code:"+972", iso:"il"},
+            {name:"Italy", code:"+39", iso:"it"}, {name:"Japan", code:"+81", iso:"jp"},
+            {name:"Kenya", code:"+254", iso:"ke"}, {name:"Malaysia", code:"+60", iso:"my"},
+            {name:"Mexico", code:"+52", iso:"mx"}, {name:"Nepal", code:"+977", iso:"np"},
+            {name:"Netherlands", code:"+31", iso:"nl"}, {name:"New Zealand", code:"+64", iso:"nz"},
+            {name:"Nigeria", code:"+234", iso:"ng"}, {name:"Pakistan", code:"+92", iso:"pk"},
+            {name:"Philippines", code:"+63", iso:"ph"}, {name:"Portugal", code:"+351", iso:"pt"},
+            {name:"Russia", code:"+7", iso:"ru"}, {name:"Saudi Arabia", code:"+966", iso:"sa"},
+            {name:"Singapore", code:"+65", iso:"sg"}, {name:"South Africa", code:"+27", iso:"za"},
+            {name:"South Korea", code:"+82", iso:"kr"}, {name:"Spain", code:"+34", iso:"es"},
+            {name:"Sri Lanka", code:"+94", iso:"lk"}, {name:"Sweden", code:"+46", iso:"se"},
+            {name:"Switzerland", code:"+41", iso:"ch"}, {name:"Thailand", code:"+66", iso:"th"},
+            {name:"Turkey", code:"+90", iso:"tr"}, {name:"UAE", code:"+971", iso:"ae"},
+            {name:"United Kingdom", code:"+44", iso:"gb"}, {name:"United States", code:"+1", iso:"us"},
+            {name:"Vietnam", code:"+84", iso:"vn"}
+        ].sort((a, b) => a.name.localeCompare(b.name));
+
+        // --- CUSTOM COUNTRY DROPDOWN LOGIC ---
+        const dropdownBtn = document.getElementById("country-dropdown-btn");
+        const dropdownMenu = document.getElementById("country-dropdown-menu");
+        const selectedText = document.getElementById("selected-country-text");
+        const countryInput = document.getElementById("country-code");
+
+        // Initialization: Set India as default
+        const defaultIn = countryData.find(c => c.iso === "in");
+        selectedText.innerHTML = `<img src="https://flagcdn.com/w20/${defaultIn.iso}.png" class="w-4 h-3 shadow-sm rounded-sm"> ${defaultIn.code}`;
+        countryInput.value = defaultIn.code;
+
+        // Build list with alphabetized items
+        countryData.forEach(country => {
+            const item = document.createElement("div");
+            item.className = "flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 cursor-pointer text-sm text-gray-700 transition border-b border-gray-50 last:border-0";
+            item.innerHTML = `
+                <img src="https://flagcdn.com/w20/${country.iso}.png" alt="${country.name}" class="w-5 shadow-sm rounded-sm">
+                <span class="font-bold w-10 shrink-0 text-gray-900">${country.code}</span>
+                <span class="truncate">${country.name}</span>
+            `;
+            item.addEventListener("click", () => {
+                countryInput.value = country.code;
+                selectedText.innerHTML = `<img src="https://flagcdn.com/w20/${country.iso}.png" class="w-4 h-3 shadow-sm rounded-sm"> ${country.code}`;
+                dropdownMenu.classList.add("hidden");
+            });
+            dropdownMenu.appendChild(item);
+        });
+
+        dropdownBtn.addEventListener("click", () => dropdownMenu.classList.toggle("hidden"));
+
+        document.addEventListener("click", (e) => {
+            if (!document.getElementById("country-dropdown-container").contains(e.target)) {
+                dropdownMenu.classList.add("hidden");
+            }
+        });
+
+        // ONLY DIGITS FOR PHONE
+        document.getElementById("vol-phone").addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // --- REGISTRATION & WIZARD LOGIC ---
+        let currentStep = 1;
+        const days  = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const times = ['Morning', 'Afternoon', 'Evening'];
+        let selectedSlots = {};
+        days.forEach(d => selectedSlots[d] = []);
+        let resendCooldown = false;
+
+        const errorBox      = document.getElementById("error-box");
+        const errorMsg      = document.getElementById("error-msg");
+        const step1El       = document.getElementById("step-1");
+        const step2El       = document.getElementById("step-2");
+        const step3El       = document.getElementById("step-3");
+        const successScreen = document.getElementById("success-screen");
+        const stepIndicators= document.getElementById("step-indicators");
+        const progressBar   = document.getElementById("progress-bar");
+        const ind2          = document.getElementById("ind-2");
+        const ind3          = document.getElementById("ind-3");
+        const lbl2          = document.getElementById("label-2");
+        const lbl3          = document.getElementById("label-3");
+        const availSummary  = document.getElementById("avail-summary");
+        const subtitle      = document.getElementById("subtitle");
+
+        const matrixContainer = document.getElementById("availability-matrix");
+
+        times.forEach(time => {
+            const row = document.createElement("div");
+            row.className = "grid grid-cols-8 gap-2 items-center";
+            const label = document.createElement("div");
+            label.className = "text-xs font-semibold text-gray-500 text-right pr-1";
+            label.textContent = time;
+            row.appendChild(label);
+
+            days.forEach(day => {
+                const cell = document.createElement("div");
+                cell.className = "h-10 rounded-lg border-2 border-gray-200 bg-white cursor-pointer hover:border-blue-300 flex items-center justify-center transition-all duration-150";
+                cell.addEventListener("click", () => {
+                    const idx = selectedSlots[day].indexOf(time);
+                    if (idx > -1) {
+                        selectedSlots[day].splice(idx, 1);
+                        cell.classList.remove("bg-blue-600", "border-blue-600");
+                        cell.classList.add("bg-white", "border-gray-200");
+                        cell.innerHTML = "";
+                    } else {
+                        selectedSlots[day].push(time);
+                        cell.classList.remove("bg-white", "border-gray-200");
+                        cell.classList.add("bg-blue-600", "border-blue-600");
+                        cell.innerHTML = '<i class="fa-solid fa-check text-white text-xs"></i>';
+                    }
+                    updateAvailSummary();
+                });
+                row.appendChild(cell);
+            });
+            matrixContainer.appendChild(row);
+        });
+
+        function updateAvailSummary() {
+            const parts = [];
+            days.forEach(day => {
+                if (selectedSlots[day].length > 0) parts.push(`${day}: ${selectedSlots[day].join(", ")}`);
+            });
+            availSummary.textContent = parts.length > 0 ? parts.join(" | ") : "No slots selected — will be saved as \"Flexible\".";
+            availSummary.classList.toggle("text-gray-400", parts.length === 0);
+            availSummary.classList.toggle("text-blue-700", parts.length > 0);
+        }
+
+        function buildAvailabilityString() {
+            const parts = [];
+            days.forEach(day => {
+                if (selectedSlots[day].length > 0) parts.push(`${day} (${selectedSlots[day].join(', ')})`);
+            });
+            return parts.length > 0 ? parts.join('; ') : "Flexible";
+        }
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorBox.classList.remove("hidden");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        function hideError() { errorBox.classList.add("hidden"); }
+
+        function updateUI() {
+            hideError();
+            step1El.classList.toggle("hidden", currentStep !== 1);
+            step2El.classList.toggle("hidden", currentStep !== 2);
+            step3El.classList.toggle("hidden", currentStep !== 3);
+            const widths = { 1: "0%", 2: "50%", 3: "100%" };
+            progressBar.style.width = widths[currentStep] || "0%";
+            ind2.className = currentStep >= 2 ? "w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-md transition-all" : "w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-sm shadow-sm transition-all";
+            lbl2.className = currentStep >= 2 ? "text-xs font-semibold text-blue-700" : "text-xs font-medium text-gray-400";
+            ind3.className = currentStep >= 3 ? "w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-md transition-all" : "w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-sm shadow-sm transition-all";
+            lbl3.className = currentStep >= 3 ? "text-xs font-semibold text-blue-700" : "text-xs font-medium text-gray-400";
+        }
+
+        function showSuccessScreen(email) {
+            step3El.classList.add("hidden");
+            stepIndicators.classList.add("hidden");
+            subtitle.textContent = "You're almost in!";
+            document.getElementById("success-email").textContent = email;
+            successScreen.classList.remove("hidden");
+        }
+
+        document.querySelectorAll(".toggle-pass").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const targetId = e.currentTarget.getAttribute("data-target");
+                const input    = document.getElementById(targetId);
+                const icon     = e.currentTarget.querySelector("i");
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.replace("fa-eye", "fa-eye-slash");
+                } else {
+                    input.type = "password";
+                    icon.classList.replace("fa-eye-slash", "fa-eye");
+                }
+            });
+        });
+
+        document.getElementById("btn-next-1").addEventListener("click", () => {
+            const email   = document.getElementById("email").value.trim();
+            const pass    = document.getElementById("password").value;
+            const confirm = document.getElementById("confirm-password").value;
+            if (!email || !pass || !confirm) return showError("Please fill in all fields.");
+            if (pass.length < 6) return showError("Password must be at least 6 characters.");
+            if (pass !== confirm) return showError("Passwords do not match.");
+            currentStep = 2; updateUI();
+        });
+
+        document.getElementById("btn-back-1").addEventListener("click", () => { currentStep = 1; updateUI(); });
+
+        document.getElementById("btn-next-2").addEventListener("click", () => {
+            const name   = document.getElementById("vol-name").value.trim();
+            const dob    = document.getElementById("vol-dob").value;
+            const phone  = document.getElementById("vol-phone").value.trim();
+            const skills = document.getElementById("vol-skills").value.trim();
+            if (!name)   return showError("Please enter your full name.");
+            if (!dob)    return showError("Please enter your date of birth.");
+            if (!phone)  return showError("Please enter your phone number.");
+            if (!skills) return showError("Please enter at least one skill.");
+            currentStep = 3; updateUI();
+        });
+
+        document.getElementById("btn-back-2").addEventListener("click", () => { currentStep = 2; updateUI(); });
+
+        document.getElementById("btn-skip-avail").addEventListener("click", () => {
+            days.forEach(d => selectedSlots[d] = []);
+            submitRegistration();
+        });
+
+        document.getElementById("btn-submit").addEventListener("click", submitRegistration);
+
+        async function submitRegistration() {
+            hideError();
+            const submitBtn = document.getElementById("btn-submit");
+            const email    = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const name     = document.getElementById("vol-name").value.trim();
+            const dob      = document.getElementById("vol-dob").value;
+            const pCode    = document.getElementById("country-code").value;
+            const pNum     = document.getElementById("vol-phone").value.trim();
+            const skillsRaw = document.getElementById("vol-skills").value.trim();
+            const skillsArray = skillsRaw.split(",").map(s => s.trim().toLowerCase()).filter(s => s !== "");
+            const availabilityString = buildAvailabilityString();
+            const fullPhone = `${pCode} ${pNum}`;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating account...';
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await sendEmailVerification(user);
+                await setDoc(doc(db, "users", user.uid), {
+                    email, role: "volunteer", name, dob, phone: fullPhone,
+                    skills: skillsArray, availability: availabilityString, createdAt: serverTimestamp()
+                });
+                showSuccessScreen(email);
+            } catch (error) {
+                let message = "Registration failed. Please try again.";
+                if (error.code === "auth/email-already-in-use") message = "This email is already registered.";
+                else if (error.code === "auth/invalid-email") message = "Invalid email address.";
+                else if (error.code === "auth/weak-password") message = "Password too weak.";
+                else if (error.message) message = error.message;
+                showError(message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Complete Account';
+            }
+        }
+
+        document.getElementById("btn-resend").addEventListener("click", async () => {
+            if (resendCooldown) return;
+            const resendBtn = document.getElementById("btn-resend");
+            const resendMsg = document.getElementById("resend-msg");
+            resendBtn.disabled = true;
+            resendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+            try {
+                const user = auth.currentUser;
+                if (user) {
+                    await sendEmailVerification(user);
+                    resendMsg.classList.remove("hidden");
+                    resendCooldown = true;
+                    let secs = 60;
+                    const timer = setInterval(() => {
+                        secs--;
+                        resendBtn.innerHTML = `<i class="fa-solid fa-clock"></i> Resend in ${secs}s`;
+                        if (secs <= 0) {
+                            clearInterval(timer);
+                            resendCooldown = false;
+                            resendBtn.disabled = false;
+                            resendBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Resend Verification Email';
+                        }
+                    }, 1000);
+                }
+            } catch (err) {
+                resendMsg.textContent = "Could not resend. Please try again soon.";
+                resendMsg.classList.remove("hidden");
+                resendMsg.classList.replace("text-green-600", "text-red-600");
+                resendBtn.disabled = false;
+                resendBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Resend Verification Email';
+            }
+        });
+    </script>
+</body>
+</html>

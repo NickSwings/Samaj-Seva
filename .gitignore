@@ -1,0 +1,17 @@
+# Node dependencies
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# API Keys & Secrets (If you move to a .env file later)
+.env
+.env.local
